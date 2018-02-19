@@ -40,10 +40,6 @@ class ImageProcessor
     @exifr_processor.height
   end
 
-  def create_date
-    @exifr_processor.date_time
-  end
-
   def gps_coordinates
     if latitude || longitude
       [latitude, longitude]

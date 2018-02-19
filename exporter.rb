@@ -6,7 +6,7 @@ class Exporter
   attr_writer :filename, :dir_path, :file_path
 
   public
-  attr_reader :file_path, :filename, :dir_path, :images
+  attr_reader :file_path, :filename, :dir_path, :images, :export_format
 
   def initialize(export_format, filename="gps_coordinates", path=Dir.pwd)
     puts export_format

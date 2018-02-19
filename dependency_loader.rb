@@ -16,5 +16,6 @@ load_and_require_gem 'exifr/jpeg'
 require 'fileutils'
 require 'csv'
 require 'erb'
-require './image_processor'
-require './exporter'
+require_relative 'image_processor'
+require_relative 'exporter'
+

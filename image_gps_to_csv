@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require './dependency_loader'
+require_relative 'dependency_loader'
 
 ERROR_LOG_PATH = "#{Dir.pwd}/error.log"
 OUTPUT_LOG_PATH = "#{Dir.pwd}/output.log"
