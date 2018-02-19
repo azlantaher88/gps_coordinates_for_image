@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require './dependency_loader'
+
+ERROR_LOG_PATH = "#{Dir.pwd}/error.log"
+OUTPUT_LOG_PATH = "#{Dir.pwd}/output.log"
+
+$stdout = File.new(OUTPUT_LOG_PATH, 'w')
+$stderr = File.new(ERROR_LOG_PATH, 'w')
+
+errors = 0
+exported = 0
+
+unless ARGV.empty?
+  supplied_path = ARGV.shift || Dir.pwd
+  export_as = ARGV.shift.downcase rescue 'csv'
+  unless Exporter::ALLOWED_FORMATS.include?(export_as)
+    STDOUT.puts "'#{export_as}' is a non supoprted format, Only allowed formats are: '#{Exporter::ALLOWED_FORMATS.join(", ")}'"
+    exit
+  end
+else
+  supplied_path = Dir.pwd
+  export_as = 'csv'
+end
+
+exporter = Exporter.new(export_as)
+Dir.glob("#{supplied_path}/**/*.{jpg,jpeg}").each do |file|
+  begin
+    image = ImageProcessor.new(file)
+    exporter.store_for_export({name: image.file_name, latitude: image.latitude, longitude: image.longitude})
+    exported += 1
+  rescue
+    errors += 1
+    $stderr.puts "[ERROR] Could not export Image #{file}, please make sure its a valid image"
+    next
+  end
+end
+exporter.save_file
+export_status = errors > 0 ? "Processed with errors" : "Successfully processed"
+
+STDOUT.puts "#{export_status} files in '#{supplied_path}'"
+STDOUT.puts "Total exported images in #{export_as}: #{exported} -- Can be seen in '#{exporter.file_path}'"
+STDOUT.puts "Total errors encountered and skipped files: #{errors} -- Details can be seen in '#{ERROR_LOG_PATH}'"
